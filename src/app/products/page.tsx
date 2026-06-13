@@ -1,10 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const cat = searchParams?.get('category') || 'all';
+    setSelectedCategory(cat);
+  }, [searchParams]);
 
   const formatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
@@ -73,7 +80,8 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {filteredProducts.map((product) => (
             <div key={product.id} className="group">
-              <div className="aspect-square relative bg-gradient-to-br from-stone-300 to-stone-200 flex items-center justify-center overflow-hidden mb-6">
+              <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow transform hover:-translate-y-1">
+                <div className="aspect-square relative bg-gradient-to-br from-stone-300 to-stone-200 flex items-center justify-center overflow-hidden mb-4 rounded-t-lg">
                 {product.image ? (
                   <div className="absolute inset-0">
                     <Image
@@ -89,8 +97,8 @@ export default function ProductsPage() {
                     {product.image}
                   </span>
                 )}
-              </div>
-              <div className="">
+                </div>
+                <div className="px-6 pb-6">
                 <p className="text-xs text-stone-500 font-light mb-2 tracking-wide uppercase">
                   {product.category}
                 </p>
@@ -105,9 +113,10 @@ export default function ProductsPage() {
                       {formatter.format(product.price)}
                     </p>
                 </div>
-                <button className="w-full mt-6 px-4 py-3 border border-stone-900 text-stone-900 hover:bg-stone-900 hover:text-white transition-colors font-light text-sm tracking-wide">
-                  Add to Cart
-                </button>
+                  <button className="w-full mt-6 px-4 py-3 border border-stone-900 text-stone-900 hover:bg-stone-900 hover:text-white transition-colors font-light text-sm tracking-wide">
+                    Add to Cart
+                  </button>
+                </div>
               </div>
             </div>
           ))}

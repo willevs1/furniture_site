@@ -7,10 +7,10 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white border-b border-stone-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-6">
+    <nav className="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex justify-between items-center">
-          <Link href="/" className="text-xl font-light text-stone-900 tracking-wide">
+          <Link href="/" className="text-2xl font-light text-stone-900 tracking-widest">
             INTERIORS
           </Link>
 
@@ -25,16 +25,16 @@ export function Navigation() {
 
           {/* Desktop menu */}
           <div className="hidden md:flex gap-12 items-center">
-            <Link href="/" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide">
+            <Link href="/" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide underline-offset-4 hover:underline">
               HOME
             </Link>
-            <Link href="/products" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide">
+            <Link href="/products" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide underline-offset-4 hover:underline">
               SHOP
             </Link>
-            <Link href="/portfolio" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide">
+            <Link href="/portfolio" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide underline-offset-4 hover:underline">
               PROJECTS
             </Link>
-            <Link href="/contact" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide">
+            <Link href="/contact" className="text-sm text-stone-700 hover:text-stone-900 transition-colors font-light tracking-wide underline-offset-4 hover:underline">
               CONTACT
             </Link>
           </div>

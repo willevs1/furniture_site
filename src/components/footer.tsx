@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export function Footer() {
   return (
     <footer className="bg-white border-t border-stone-200 py-20">
@@ -13,19 +15,19 @@ export function Footer() {
           <div>
             <h4 className="font-light text-stone-900 mb-6 text-sm tracking-wide">SHOP</h4>
             <ul className="space-y-3">
-              <li><a href="/products" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">All Products</a></li>
-              <li><a href="/products?category=seating" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Seating</a></li>
-              <li><a href="/products?category=tables" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Dining</a></li>
-              <li><a href="/products?category=lighting" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Lighting</a></li>
+              <li><Link href="/products" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">All Products</Link></li>
+              <li><Link href="/products?category=seating" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Seating</Link></li>
+              <li><Link href="/products?category=tables" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Dining</Link></li>
+              <li><Link href="/products?category=lighting" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Lighting</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-light text-stone-900 mb-6 text-sm tracking-wide">COMPANY</h4>
             <ul className="space-y-3">
-              <li><a href="/portfolio" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Projects</a></li>
-              <li><a href="/contact" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Contact</a></li>
-              <li><a href="#" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">About</a></li>
+              <li><Link href="/portfolio" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Projects</Link></li>
+              <li><Link href="/contact" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">Contact</Link></li>
+              <li><Link href="/about" className="text-stone-600 hover:text-stone-900 transition-colors font-light text-sm">About</Link></li>
             </ul>
           </div>
 

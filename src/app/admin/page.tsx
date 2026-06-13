@@ -9,6 +9,9 @@ type Product = {
   price: number;
   image: string;
   description: string;
+  alt?: string;
+  metaTitle?: string;
+  metaDescription?: string;
 };
 
 export default function AdminPage() {
@@ -88,6 +91,36 @@ export default function AdminPage() {
     }
   }
 
+  const [generating, setGenerating] = useState<Record<number, boolean>>({});
+
+  async function handleGenerate(idx: number) {
+    const p = products[idx];
+    if (!p) return;
+    setGenerating((s) => ({ ...s, [p.id]: true }));
+    try {
+      const res = await fetch('/api/admin/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password, product: p }),
+      });
+      const data = await res.json();
+      if (res.ok && data.result) {
+        const r = data.result;
+        if (r.description) updateField(idx, 'description', r.description);
+        if (r.alt) updateField(idx, 'alt', r.alt);
+        if (r.metaTitle) updateField(idx, 'metaTitle', r.metaTitle);
+        if (r.metaDescription) updateField(idx, 'metaDescription', r.metaDescription);
+        const tokens = data.usage ? `${data.usage.total_tokens} tokens` : 'unknown tokens';
+        setMessage(`Generated content updated for product (${tokens}). Review and Save to commit.`);
+      } else {
+        setMessage(`Generation error: ${data.error || 'unknown'}`);
+      }
+    } catch (err: any) {
+      setMessage(`Generation failed: ${err.message || String(err)}`);
+    }
+    setGenerating((s) => ({ ...s, [p.id]: false }));
+  }
+
   return (
     <main className="min-h-screen bg-stone-50 p-8">
       <div className="max-w-4xl mx-auto">
@@ -124,6 +157,27 @@ export default function AdminPage() {
             <div className="mt-4">
               <label className="block text-xs">Description</label>
               <textarea value={p.description} onChange={(e) => updateField(idx, 'description', e.target.value)} className="w-full px-2 py-2 border" />
+              <div className="mt-2 flex gap-2">
+                <button onClick={() => handleGenerate(idx)} disabled={generating[p.id]} className="px-3 py-2 text-sm border bg-stone-100">
+                  {generating[p.id] ? 'Generating...' : 'Generate copy & SEO'}
+                </button>
+                <p className="text-xs text-stone-500 mt-2">Use this to auto-create description, alt text and meta. Review before saving.</p>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs">Image alt text</label>
+                <input value={p.alt || ''} onChange={(e) => updateField(idx, 'alt', e.target.value)} className="w-full px-2 py-2 border" />
+              </div>
+              <div>
+                <label className="block text-xs">Meta title</label>
+                <input value={p.metaTitle || ''} onChange={(e) => updateField(idx, 'metaTitle', e.target.value)} className="w-full px-2 py-2 border" />
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-xs">Meta description</label>
+              <textarea value={p.metaDescription || ''} onChange={(e) => updateField(idx, 'metaDescription', e.target.value)} className="w-full px-2 py-2 border" />
             </div>
           </div>
         ))}
