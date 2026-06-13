@@ -5,7 +5,10 @@
     "category": "seating",
     "price": 1299,
     "image": "/images/products/modern-sofa.jpg",
-    "description": "Contemporary design with premium upholstery"
+    "description": "Test1 features a contemporary design complemented by premium upholstery, making it the perfect addition to any modern space.",
+    "alt": "Test1 contemporary seating with premium upholstery",
+    "metaTitle": "Test1 Contemporary Seating",
+    "metaDescription": "Discover Test1, a stylish seating solution with premium upholstery and a contemporary design for your modern home."
   },
   {
     "id": 2,
