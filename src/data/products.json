@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "name": "Modern Sofa",
+    "category": "seating",
+    "price": 1299,
+    "image": "/images/products/modern-sofa.jpg",
+    "description": "Contemporary design with premium upholstery"
+  },
+  {
+    "id": 2,
+    "name": "Accent Chair",
+    "category": "seating",
+    "price": 599,
+    "image": "/images/products/accent-chair.jpg",
+    "description": "Stylish accent piece for any room"
+  },
+  {
+    "id": 3,
+    "name": "Lounge Chaise",
+    "category": "seating",
+    "price": 899,
+    "image": "/images/products/lounge-chaise.jpg",
+    "description": "Comfortable and elegant seating solution"
+  },
+  {
+    "id": 4,
+    "name": "Ottoman Bench",
+    "category": "seating",
+    "price": 449,
+    "image": "/images/products/ottoman-bench.jpg",
+    "description": "Versatile storage and seating combo"
+  }
+]

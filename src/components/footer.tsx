@@ -32,8 +32,8 @@ export function Footer() {
           <div>
             <h4 className="font-light text-stone-900 mb-6 text-sm tracking-wide">CONTACT</h4>
             <p className="text-stone-600 font-light text-sm mb-2">hello@interiors.co</p>
-            <p className="text-stone-600 font-light text-sm mb-2">(555) 123-4567</p>
-            <p className="text-stone-600 font-light text-sm">123 Design Street<br />Creative City, CA</p>
+            <p className="text-stone-600 font-light text-sm mb-2">+44 20 7123 4567</p>
+            <p className="text-stone-600 font-light text-sm">12 Design Street<br />London, WC1 2AB</p>
           </div>
         </div>
 

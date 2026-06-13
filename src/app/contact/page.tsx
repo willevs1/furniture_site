@@ -51,14 +51,14 @@ export default function ContactPage() {
           <div className="space-y-12">
             <div>
               <h3 className="text-xl font-light text-stone-900 mb-4 tracking-wide">ADDRESS</h3>
-              <p className="text-stone-600 font-light">123 Design Street</p>
-              <p className="text-stone-600 font-light">Creative City, CA 90210</p>
+              <p className="text-stone-600 font-light">12 Design Street</p>
+              <p className="text-stone-600 font-light">London, WC1 2AB</p>
             </div>
 
             <div>
               <h3 className="text-xl font-light text-stone-900 mb-4 tracking-wide">PHONE</h3>
-              <p className="text-stone-600 font-light">(555) 123-4567</p>
-              <p className="text-stone-500 font-light text-sm mt-2">Monday—Friday, 9AM—6PM PT</p>
+              <p className="text-stone-600 font-light">+44 20 7123 4567</p>
+              <p className="text-stone-500 font-light text-sm mt-2">Monday—Friday, 9AM—6PM (GMT/BST)</p>
             </div>
 
             <div>
@@ -69,8 +69,8 @@ export default function ContactPage() {
 
             <div>
               <h3 className="text-xl font-light text-stone-900 mb-4 tracking-wide">HOURS</h3>
-              <p className="text-stone-600 font-light">Monday—Friday: 9AM—6PM</p>
-              <p className="text-stone-600 font-light">Saturday: 10AM—4PM</p>
+              <p className="text-stone-600 font-light">Monday—Friday: 9:00—18:00 (GMT/BST)</p>
+              <p className="text-stone-600 font-light">Saturday: 10:00—16:00</p>
               <p className="text-stone-600 font-light">Sunday: Closed</p>
             </div>
           </div>
