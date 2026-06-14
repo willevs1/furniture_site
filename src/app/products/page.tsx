@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [products, setProducts] = useState<any[]>([]);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -13,24 +14,30 @@ export default function ProductsPage() {
     setSelectedCategory(cat);
   }, [searchParams]);
 
+  useEffect(() => {
+    let mounted = true;
+
+    async function load() {
+      try {
+        const res = await fetch('/api/products');
+        const json = await res.json();
+        if (mounted && json?.products) setProducts(json.products);
+      } catch (err) {
+        console.error('Failed to load products', err);
+      }
+    }
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const formatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',
     minimumFractionDigits: 0,
   });
-
-  // Load products from JSON file so they can be edited via the admin UI.
-  // The admin UI will update `src/data/products.json` in the repository.
-  // Importing JSON allows Next to include this at build time; the admin API reads and writes
-  // the same file via the GitHub API so changes are reflected after deploy.
-  // We keep a local import as a fallback.
-  let products: any[] = [];
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    products = require('@/data/products.json');
-  } catch (err) {
-    products = [];
-  }
 
   const categories = [
     { id: 'all', label: 'All Products' },
@@ -40,8 +47,8 @@ export default function ProductsPage() {
     { id: 'decor', label: 'Decor' },
   ];
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
+  const filteredProducts = selectedCategory === 'all'
+    ? products
     : products.filter(p => p.category === selectedCategory);
 
   return (

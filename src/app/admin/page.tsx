@@ -17,6 +17,7 @@ type Product = {
 export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
+  const [projects, setProjects] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [newImages, setNewImages] = useState<Record<number, { filename: string; content: string }>>({});
@@ -27,6 +28,11 @@ export default function AdminPage() {
       .then((data) => {
         if (data.products) setProducts(data.products);
       });
+    // load projects.json as a simple admin-managed list
+    fetch('/api/admin/projects')
+      .then((r) => r.json())
+      .then((d) => { if (d?.projects) setProjects(d.projects); })
+      .catch(() => {});
   }, []);
 
   function updateField(idx: number, key: keyof Product, value: any) {
@@ -61,9 +67,10 @@ export default function AdminPage() {
       const ext = mime.split('/')[1] || 'jpg';
       const filename = `${slugify(products[idx].name || 'product')}-${products[idx].id}.${ext}`;
 
-      setNewImages((prev) => ({ ...prev, [products[idx].id]: { filename, content: b64 } }));
+      // store full data URL so we can preview immediately; server accepts data URLs too
+      setNewImages((prev) => ({ ...prev, [products[idx].id]: { filename, content: result } }));
 
-      // update product image path to the public URL we'll write to
+      // update product image path to the public URL we'll write to (fallback path)
       updateField(idx, 'image', `/images/products/${filename}`);
     };
     reader.readAsDataURL(file);
@@ -75,7 +82,7 @@ export default function AdminPage() {
 
     // Include any newly uploaded images (base64) in payload so the server can commit them.
     const images = Object.values(newImages).map((img) => ({ path: `/public/images/products/${img.filename}`, content: img.content }));
-    const payload = { password, products, images };
+    const payload = { password, products, images, projects };
 
     const res = await fetch('/api/admin/save', {
       method: 'POST',
@@ -85,10 +92,47 @@ export default function AdminPage() {
     const data = await res.json();
     setLoading(false);
     if (res.ok) {
-      setMessage('Saved successfully — the site will redeploy shortly.');
+      const resp = data || {};
+      let msg = 'Saved successfully — the site will redeploy shortly.';
+      if (resp.sanity) {
+        msg = `Saved to Sanity (documents: ${JSON.stringify(resp.sanity.results || resp.sanity)}).`;
+      }
+      if (resp.projectsCommit) {
+        msg += ' Projects updated.';
+      }
+      setMessage(msg);
     } else {
       setMessage(`Error: ${data.error || 'unknown'}`);
     }
+  }
+
+  function addProduct() {
+    setProducts((p) => {
+      const nextId = p.reduce((max, it) => Math.max(max, Number(it.id || 0)), 0) + 1;
+      return [...p, { id: nextId, name: '', category: '', price: 0, image: '', description: '' }];
+    });
+  }
+
+  function removeProduct(idx: number) {
+    setProducts((p) => p.filter((_, i) => i !== idx));
+  }
+
+  // Projects CRUD
+  function addProject() {
+    setProjects((s) => [...s, { id: Date.now(), title: '', description: '', image: '' }]);
+  }
+
+  function updateProject(idx: number, key: string, value: any) {
+    setProjects((p) => {
+      const clone = [...p];
+      // @ts-ignore
+      clone[idx][key] = value;
+      return clone;
+    });
+  }
+
+  function removeProject(idx: number) {
+    setProjects((p) => p.filter((_, i) => i !== idx));
   }
 
   const [generating, setGenerating] = useState<Record<number, boolean>>({});
@@ -132,6 +176,13 @@ export default function AdminPage() {
           <p className="text-xs text-stone-500 mt-2">This password is checked server-side. Set `ADMIN_PASSWORD` in your Vercel project settings.</p>
         </div>
 
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-light">Products</h2>
+          <div className="flex gap-2">
+            <button onClick={addProduct} className="px-3 py-1 border bg-white">Add product</button>
+          </div>
+        </div>
+
         {products.map((p, idx) => (
           <div key={p.id} className="mb-6 p-4 border bg-white">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -151,7 +202,33 @@ export default function AdminPage() {
 
             <div className="mt-4">
               <label className="block text-xs">Image path or URL</label>
-              <input value={p.image} onChange={(e) => updateField(idx, 'image', e.target.value)} className="w-full px-2 py-2 border" />
+              <div className="flex gap-2 items-center">
+                <input value={p.image} onChange={(e) => updateField(idx, 'image', e.target.value)} className="w-full px-2 py-2 border" />
+
+                {/* Hidden file input with visible label as button */}
+                <label htmlFor={`file-${p.id}`} className="inline-flex items-center gap-2 px-3 py-2 bg-stone-100 border cursor-pointer text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3v4M8 3v4m0 0h8" />
+                  </svg>
+                  Upload photo
+                </label>
+                <input id={`file-${p.id}`} type="file" accept="image/*" onChange={(e) => handleFileChange(idx, e.target.files?.[0])} className="hidden" />
+
+                <button onClick={() => removeProduct(idx)} className="px-2 py-1 border text-sm">Delete</button>
+              </div>
+
+              {/* Thumbnail preview */}
+              <div className="mt-3">
+                {newImages[products[idx].id] ? (
+                  <img src={newImages[products[idx].id].content} alt={p.alt || p.name} className="w-28 h-28 object-cover rounded" />
+                ) : p.image ? (
+                  // show current image (may be a local path or external URL)
+                  // Note: next/image not used here because this is an admin preview
+                  <img src={p.image} alt={p.alt || p.name} className="w-28 h-28 object-cover rounded" />
+                ) : (
+                  <div className="w-28 h-28 bg-stone-100 flex items-center justify-center rounded text-sm text-stone-500">No image</div>
+                )}
+              </div>
             </div>
 
             <div className="mt-4">
@@ -187,6 +264,24 @@ export default function AdminPage() {
             {loading ? 'Saving...' : 'Save Changes'}
           </button>
           {message && <p className="text-sm text-stone-700">{message}</p>}
+        </div>
+
+        {/* Projects editor */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-light">Projects</h2>
+            <button onClick={addProject} className="px-3 py-1 border bg-white">Add project</button>
+          </div>
+          {projects.map((proj, idx) => (
+            <div key={proj.id} className="mb-4 p-3 border bg-white">
+              <input value={proj.title || ''} onChange={(e) => updateProject(idx, 'title', e.target.value)} placeholder="Title" className="w-full px-2 py-2 border mb-2" />
+              <textarea value={proj.description || ''} onChange={(e) => updateProject(idx, 'description', e.target.value)} placeholder="Description" className="w-full px-2 py-2 border mb-2" />
+              <div className="flex gap-2">
+                <input value={proj.image || ''} onChange={(e) => updateProject(idx, 'image', e.target.value)} placeholder="Image URL/path" className="flex-1 px-2 py-2 border" />
+                <button onClick={() => removeProject(idx)} className="px-2 py-1 border">Delete</button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </main>
