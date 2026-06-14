@@ -1,0 +1,43 @@
+{
+  "migratedAt": "2026-06-14T10:58:59.905Z",
+  "source": "src/data/products.json",
+  "count": 4,
+  "documents": [
+    {
+      "_id": "product.1",
+      "_type": "product",
+      "name": "Test1",
+      "price": 1299,
+      "description": "Test1 features a contemporary design complemented by premium upholstery, making it the perfect addition to any modern space.",
+      "category": "seating",
+      "imagePath": "/images/products/modern-sofa.jpg"
+    },
+    {
+      "_id": "product.2",
+      "_type": "product",
+      "name": "Accent Chair",
+      "price": 599,
+      "description": "Stylish accent piece for any room",
+      "category": "seating",
+      "imagePath": "/images/products/accent-chair.jpg"
+    },
+    {
+      "_id": "product.3",
+      "_type": "product",
+      "name": "Lounge Chaise",
+      "price": 899,
+      "description": "Comfortable and elegant seating solution",
+      "category": "seating",
+      "imagePath": "/images/products/lounge-chaise.jpg"
+    },
+    {
+      "_id": "product.4",
+      "_type": "product",
+      "name": "Ottoman Bench",
+      "price": 449,
+      "description": "Versatile storage and seating combo",
+      "category": "seating",
+      "imagePath": "/images/products/ottoman-bench.jpg"
+    }
+  ]
+}
